@@ -86,6 +86,7 @@ function DemoPageContent({ pathname }) {
         px: 2,
       }}
     >
+      
       {content}
     </Box>
   );
@@ -116,7 +117,9 @@ function DashboardLayoutBasic(props) {
       theme={demoTheme}
       window={demoWindow}
       
+      
     >
+      
       <DashboardLayout>
         <DemoPageContent pathname={router.pathname} />
         <DashboardFooter/>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -21,7 +21,13 @@ const courses = [
   "Mobile App Development",
 ];
 
-const webTechnologies = ["React", "Angular", "Vue", "Node.js", "Django"];
+const technologyMap = {
+  "Web Development": ["React", "Angular", "Vue", "Node.js", "Django"],
+  "Data Science": ["Python", "R", "Pandas", "TensorFlow", "Scikit-learn"],
+  "Machine Learning": ["Python", "TensorFlow", "Keras", "PyTorch"],
+  "UI/UX Design": ["Figma", "Sketch", "Adobe XD", "InVision"],
+  "Mobile App Development": ["Flutter", "React Native", "Swift", "Kotlin"],
+};
 
 const timings = ["Morning", "Afternoon", "Evening"];
 
@@ -31,12 +37,25 @@ const StudentEnquiry = () => {
     phone: "",
     email: "",
     interestedCourses: [],
-    webTechnology: "",
+    webTechnology: [],
     preferredTimings: [],
     preferredMode: "",
     academicDetails: "",
     personalDetails: "",
   });
+
+  const [availableTechnologies, setAvailableTechnologies] = useState([]);
+
+  useEffect(() => {
+    // Set available technologies based on selected courses
+    const technologies = formData.interestedCourses.reduce((acc, course) => {
+      if (technologyMap[course]) {
+        acc.push(...technologyMap[course]);
+      }
+      return acc;
+    }, []);
+    setAvailableTechnologies([...new Set(technologies)]);
+  }, [formData.interestedCourses]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -46,12 +65,13 @@ const StudentEnquiry = () => {
     }));
   };
 
-  const handleCheckboxChange = (timing) => {
+  const handleCheckboxChange = (event, field) => {
+    const { value, checked } = event.target;
     setFormData((prev) => ({
       ...prev,
-      preferredTimings: prev.preferredTimings.includes(timing)
-        ? prev.preferredTimings.filter((t) => t !== timing)
-        : [...prev.preferredTimings, timing],
+      [field]: checked
+        ? [...prev[field], value]
+        : prev[field].filter((item) => item !== value),
     }));
   };
 
@@ -130,6 +150,9 @@ const StudentEnquiry = () => {
             >
               {courses.map((course) => (
                 <MenuItem key={course} value={course}>
+                  <Checkbox
+                    checked={formData.interestedCourses.includes(course)}
+                  />
                   {course}
                 </MenuItem>
               ))}
@@ -144,11 +167,16 @@ const StudentEnquiry = () => {
             <Select
               labelId="web-tech-label"
               name="webTechnology"
+              multiple
               value={formData.webTechnology}
               onChange={handleChange}
+              renderValue={(selected) => selected.join(", ")}
             >
-              {webTechnologies.map((tech) => (
+              {availableTechnologies.map((tech) => (
                 <MenuItem key={tech} value={tech}>
+                  <Checkbox
+                    checked={formData.webTechnology.includes(tech)}
+                  />
                   {tech}
                 </MenuItem>
               ))}
@@ -157,7 +185,7 @@ const StudentEnquiry = () => {
         </Grid>
 
         {/* Preferred Timings Field */}
-        <Grid item xs={12} style={{ marginLeft: "0" }}>
+        <Grid item xs={12}>
           <Typography variant="subtitle1" gutterBottom>
             Preferred Timings:
           </Typography>
@@ -167,7 +195,15 @@ const StudentEnquiry = () => {
               control={
                 <Checkbox
                   checked={formData.preferredTimings.includes(timing)}
-                  onChange={() => handleCheckboxChange(timing)}
+                  onChange={() =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      preferredTimings: prev.preferredTimings.includes(timing)
+                        ? prev.preferredTimings.filter((t) => t !== timing)
+                        : [...prev.preferredTimings, timing],
+                    }))
+                  }
+                  value={timing}
                 />
               }
               label={timing}
@@ -217,12 +253,7 @@ const StudentEnquiry = () => {
 
         {/* Submit Button */}
         <Grid item xs={12}>
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            size="large"
-          >
+          <Button type="submit" variant="contained" color="primary" size="large">
             Submit
           </Button>
         </Grid>

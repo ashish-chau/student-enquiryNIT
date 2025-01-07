@@ -26,8 +26,21 @@ const enquiryModes = [
 const enquiryCourses = ["Course", "Follow Up"];
 const students = ["Karan", "Venktesh", "Lokesh"];
 const counsellors = ["Shudhakar", "Amit", "Zareen"];
-const callStatuses = ["Not lifting", "Switch Off", "Wrong No.", "Out Of Network", "Answered"];
-const admissionStatuses = ["Already Join NIT", "Immediate But Need Follow", "Thinking Twice", "Interested In Different Institute", "Interested To Join Other Institute", "Already Join Other Institute"];
+const callStatuses = [
+  "Not lifting",
+  "Switch Off",
+  "Wrong No.",
+  "Out Of Network",
+  "Answered",
+];
+const admissionStatuses = [
+  "Already Join NIT",
+  "Immediate But Need Follow",
+  "Thinking Twice",
+  "Interested In Different Institute",
+  "Interested To Join Other Institute",
+  "Already Join Other Institute",
+];
 const furtherCounselingOptions = ["Yes", "No"];
 
 const AdmissionEnquiry = () => {
@@ -87,7 +100,7 @@ const AdmissionEnquiry = () => {
       onSubmit={handleSubmit}
       sx={{
         p: 3,
-        maxWidth: 500,
+        maxWidth: 400,
         mx: "auto",
         bgcolor: "background.paper",
         borderRadius: 2,
@@ -163,7 +176,7 @@ const AdmissionEnquiry = () => {
           onSubmit={handleFollowUpSubmit}
           sx={{
             p: 3,
-            maxWidth: 500,
+            maxWidth: 400,
             mx: "auto",
             mt: 5,
             bgcolor: "background.paper",
