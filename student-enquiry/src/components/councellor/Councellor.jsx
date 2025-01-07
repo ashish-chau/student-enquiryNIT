@@ -4,12 +4,13 @@ import {
   Button,
   Checkbox,
   FormControl,
-  FormControlLabel,
   Grid,
   InputLabel,
   MenuItem,
   Select,
+  ListItemText,
   Typography,
+  FormControlLabel 
 } from "@mui/material";
 
 const studentDetailsOptions = [
@@ -29,7 +30,7 @@ const priorityLevels = ["Immediate", "Immediate Follow Up", "Follow Up In 2 Days
 
 const Councellor = () => {
   const [formData, setFormData] = useState({
-    studentDetail: "",
+    studentDetail: [],
     counselorUpdate: [],
     lookingForJoining: [],
     priority: [],
@@ -37,9 +38,10 @@ const Councellor = () => {
 
   // Handle dropdown change
   const handleDropdownChange = (event) => {
+    const { value } = event.target;
     setFormData((prev) => ({
       ...prev,
-      studentDetail: event.target.value,
+      studentDetail: value,
     }));
   };
 
@@ -76,18 +78,21 @@ const Councellor = () => {
         Councellor Form
       </Typography>
       <Grid container spacing={2}>
-        {/* Student Details Dropdown */}
+        {/* Student Details Dropdown with Checkboxes */}
         <Grid item xs={12}>
           <FormControl fullWidth required>
-            <InputLabel id="student-detail-label">Student Details</InputLabel>
+            <InputLabel id="student-detail-label">Select Student</InputLabel>
             <Select
               labelId="student-detail-label"
               value={formData.studentDetail}
               onChange={handleDropdownChange}
+              multiple
+              renderValue={(selected) => selected.join(", ")}
             >
               {studentDetailsOptions.map((option) => (
                 <MenuItem key={option} value={option}>
-                  {option}
+                  <Checkbox checked={formData.studentDetail.includes(option)} />
+                  <ListItemText primary={option} />
                 </MenuItem>
               ))}
             </Select>
@@ -161,7 +166,6 @@ const Councellor = () => {
             type="submit"
             variant="contained"
             color="primary"
-            
             size="large"
           >
             Submit

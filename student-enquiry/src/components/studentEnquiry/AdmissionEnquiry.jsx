@@ -42,6 +42,7 @@ const admissionStatuses = [
   "Already Join Other Institute",
 ];
 const furtherCounselingOptions = ["Yes", "No"];
+const institutes = ["MIT", "IIT", "NIT", "BITS", "AIIMS"]; // Example institute names
 
 const AdmissionEnquiry = () => {
   const [formData, setFormData] = useState({
@@ -57,7 +58,11 @@ const AdmissionEnquiry = () => {
     callStatus: "",
     admissionStatus: "",
     needFurtherCounseling: "",
+    selectedInstitutes: [], // For storing selected institutes
   });
+
+  const [isOtherInstituteSelected, setIsOtherInstituteSelected] =
+    useState(false); // Track if "Already Join Other Institute" is selected
 
   // Handle checkbox toggle
   const handleCheckboxToggle = (field, value) => {
@@ -79,6 +84,15 @@ const AdmissionEnquiry = () => {
       ...prev,
       [field]: value,
     }));
+
+    if (
+      field === "admissionStatus" &&
+      value === "Already Join Other Institute"
+    ) {
+      setIsOtherInstituteSelected(true); // Show the institute dropdown if "Already Join Other Institute" is selected
+    } else {
+      setIsOtherInstituteSelected(false); // Hide the dropdown if it's not selected
+    }
   };
 
   const handleSubmit = (event) => {
@@ -92,6 +106,15 @@ const AdmissionEnquiry = () => {
     console.log("Follow-Up Data Submitted:", followUpData);
     alert("Follow-Up Submitted!");
     setModalOpen(false);
+  };
+
+  // Handle institute checkbox selection
+  const handleInstituteChange = (event) => {
+    const { value } = event.target;
+    setFollowUpData((prev) => ({
+      ...prev,
+      selectedInstitutes: value,
+    }));
   };
 
   return (
@@ -278,6 +301,31 @@ const AdmissionEnquiry = () => {
               ))}
             </RadioGroup>
           </FormControl>
+
+          {/* Conditional Institute Dropdown */}
+          {isOtherInstituteSelected && (
+            <FormControl fullWidth margin="normal">
+              <InputLabel id="institutes-label">Select Institutes</InputLabel>
+              <Select
+                labelId="institutes-label"
+                multiple
+                value={followUpData.selectedInstitutes}
+                onChange={handleInstituteChange}
+                renderValue={(selected) => selected.join(", ")}
+              >
+                {institutes.map((institute) => (
+                  <MenuItem key={institute} value={institute}>
+                    <Checkbox
+                      checked={followUpData.selectedInstitutes.includes(
+                        institute
+                      )}
+                    />
+                    {institute}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          )}
 
           {/* Need Further Counseling */}
           <FormControl component="fieldset" margin="normal">
